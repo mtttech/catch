@@ -2,7 +2,7 @@
 
 This script scrapes fighter stats from the UFC website (use responsibly).
 
-Note that this script may stop functioning if UFC drastically changes the layout of their website. As of 03.23.24, the script still works.
+Note that this script may stop functioning if UFC drastically changes the layout of their website. As of 10.27.24, the script still works.
 
 ## Quickstart
 
