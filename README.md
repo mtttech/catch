@@ -18,7 +18,7 @@ Note that this script may stop functioning if UFC drastically changes the layout
 Clone the repository and change into its directory.
 
 ```
-git clone https://codeberg.com/mtttech/openfight.git
+git clone https://github.com/mtttech/openfight.git
 cd openfight
 ```
 
