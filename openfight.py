@@ -1,21 +1,28 @@
+"""
+openfight.py
+Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
+Created:    16.11.23
+Modified:   23.03.24
+"""
 import asyncio
 import sys
+from typing import Dict, List, Union
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+import requests
 
 BASE_URL = "https://www.ufc.com/athlete/"
 
 
-def parse_response(driver, athlete):
+def parse_response(athlete: str, content: bytes) -> Dict[str, Union[str, int]]:
     record = dict()
     record["athlete"] = athlete
 
-    assert athlete in driver.title
-
     # Gather the basic stats from the page.
-    fighter_record = driver.find_element(By.CLASS_NAME, "hero-profile__division-body")
-    fighter_record = fighter_record.text.split(" ")
+    soup = BeautifulSoup(content, "html.parser")
+
+    fighter_record = soup.find("p", class_="hero-profile__division-body")
+    fighter_record = fighter_record.text.split(" ") # pyright: ignore [reportOptionalMemberAccess]
     fighter_record = fighter_record[0].split("-")
 
     print(f"Stats found for {athlete}.")
@@ -37,11 +44,11 @@ def parse_response(driver, athlete):
     # First Round Finishes
     # Fight Win Streak
     # Title Defenses
-    other_categories = driver.find_elements(By.CLASS_NAME, "hero-profile__stat-text")
+    other_categories = soup.findAll("p", class_="hero-profile__stat-text")
     other_categories = [x.text.lower().replace(" ", "_") for x in other_categories]
 
     # Gather all the values for the above.
-    other_values = driver.find_elements(By.CLASS_NAME, "hero-profile__stat-numb")
+    other_values = soup.findAll("p", class_="hero-profile__stat-numb")
     other_values = [int(s.text) for s in other_values]
 
     # Put it all together.
@@ -77,37 +84,28 @@ def parse_response(driver, athlete):
     return {k: record[k] for k in order if k in record}
 
 
-async def gather_requests(argv):
-    async def request_athlete(athlete):
-        fighter_url = BASE_URL + athlete.strip().lower().replace(" ", "-")
-        print(f"Looking up ({athlete} @ {fighter_url})...")
-        
-        driver = webdriver.Firefox()
-
-        try:
-            driver.get(fighter_url)
-            await asyncio.sleep(1)
-            return parse_response(driver, athlete)
-        except AssertionError:
-            print(f"An error occured locating '{athlete}'. Please check your spelling.")
-        finally:
-            driver.close()
-
-    results = []
-    for a in argv:
-        data = await request_athlete(a)
-        if data is not None:
-            results.append(data)
-
-    return results
+async def request_athlete(athlete: str) -> Union[Dict[str, Union[str, int]], None]:
+    fighter_url = BASE_URL + athlete.strip().lower().replace(" ", "-")
+    print(f"Looking up ({athlete} @ {fighter_url})...")
+    try:
+        result = requests.get(fighter_url)
+        result.raise_for_status()
+        await asyncio.sleep(1)
+        return parse_response(athlete, result.content)
+    except requests.exceptions.HTTPError as e:
+        print(e.__str__())
+    except AttributeError:
+        print(f"An error occured locating '{athlete}'. Please check your spelling.")
 
 
-async def main(athletes):
+async def main(athletes: List[str]) -> None:
     if len(athletes) < 2:
         print("error: not enough arguments specified.")
         exit(1)
 
-    print(await gather_requests(athletes[1:]))
+    fighter_requests = [request_athlete(a) for a in athletes[1:]]
+    data = await asyncio.gather(*fighter_requests)
+    print(data)
 
 
 if __name__ == "__main__":

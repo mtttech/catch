@@ -2,7 +2,7 @@
 
 This script scrapes fighter stats from the UFC website (use responsibly).
 
-Note that the functionality of this script may change if UFC decides to change up their website. I had to rewrite the scraping code once. As of 01.13.24, the script still works.
+Note that this script may stop functioning if UFC drastically changes the layout of their website. As of 03.23.24, the script still works.
 
 ## Quickstart
 
@@ -10,7 +10,8 @@ Note that the functionality of this script may change if UFC decides to change u
 
 **OpenFIGHT** has the following dependencies.
 
-* [selenium](https://github.com/SeleniumHQ/selenium)
+* [Beautiful Soup](https://code.launchpad.net/beautifulsoup)
+* [requests](https://github.com/psf/requests)
 
 ### Installation & Usage
 
