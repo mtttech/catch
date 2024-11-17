@@ -1,16 +1,19 @@
 [tool.poetry]
 name = "openfight"
-version = "0.1.1"
+version = "0.1.2"
 description = "A web scraping script for the UFC website."
 authors = ["mtttech <mtaylor9754@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-requests = "^2.31.0"
-beautifulsoup4 = "^4.12.2"
+bs4 = "^0.0.2"
+requests = "^2.32.3"
 
+[tool.poetry.scripts]
+openfight='src.openfight:openfight_main'
 
 [build-system]
 requires = ["poetry-core"]
