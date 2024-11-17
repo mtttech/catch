@@ -1,12 +1,12 @@
 """
-openfight.py
+openfight
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   23.03.24
+Modified:   17.11.24
 """
-import asyncio
 import sys
-from typing import Dict, List, Union
+import time
+from typing import Dict, Union
 
 from bs4 import BeautifulSoup
 import requests
@@ -14,7 +14,7 @@ import requests
 BASE_URL = "https://www.ufc.com/athlete/"
 
 
-def parse_response(athlete: str, content: bytes) -> Dict[str, Union[str, int]]:
+def build_stat_block(athlete: str, content: bytes) -> Dict[str, Union[str, int]]:
     record = dict()
     record["athlete"] = athlete
 
@@ -84,29 +84,29 @@ def parse_response(athlete: str, content: bytes) -> Dict[str, Union[str, int]]:
     return {k: record[k] for k in order if k in record}
 
 
-async def request_athlete(athlete: str) -> Union[Dict[str, Union[str, int]], None]:
+def request_fighter_stats(athlete: str) -> Union[Dict[str, Union[str, int]], None]:
     fighter_url = BASE_URL + athlete.strip().lower().replace(" ", "-")
-    print(f"Looking up ({athlete} @ {fighter_url})...")
+    print(f"Looking up '{athlete}'...")
     try:
         result = requests.get(fighter_url)
         result.raise_for_status()
-        await asyncio.sleep(1)
-        return parse_response(athlete, result.content)
+        time.sleep(1)
+        return build_stat_block(athlete, result.content)
     except requests.exceptions.HTTPError as e:
         print(e.__str__())
     except AttributeError:
-        print(f"An error occured locating '{athlete}'. Please check your spelling.")
+        print("A query error has occured.")
 
 
-async def main(athletes: List[str]) -> None:
-    if len(athletes) < 2:
+def openfight_main() -> None:
+    athlete = sys.argv
+    if len(athlete) < 2:
         print("error: not enough arguments specified.")
         exit(1)
 
-    fighter_requests = [request_athlete(a) for a in athletes[1:]]
-    data = await asyncio.gather(*fighter_requests)
-    print(data)
+    fighter_stats = [request_fighter_stats(a) for a in athlete[1:]]
+    print(*fighter_stats)
 
 
 if __name__ == "__main__":
-    asyncio.run(main(sys.argv))
+    openfight_main()
