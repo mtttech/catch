@@ -2,7 +2,7 @@
 
 This script scrapes fighter stats from the UFC website (use responsibly).
 
-Note that the functionality of this script may change if UFC decides to change up their website. I had to rewrite the scraping code once. As of 11.17.24, the script still works.
+Note that the functionality of this script may change if UFC decides to change up their website. I had to rewrite the scraping code once. As of 11.21.24, the script still works.
 
 ## Quickstart
 
@@ -11,6 +11,7 @@ Note that the functionality of this script may change if UFC decides to change u
 **OpenFIGHT** has the following dependencies.
 
 * [beautifulsoup4](https://code.launchpad.net/beautifulsoup)
+* [prettytable](https://github.com/prettytable/prettytable)
 * [requests](https://github.com/psf/requests)
 
 ### Installation & Usage
@@ -18,30 +19,36 @@ Note that the functionality of this script may change if UFC decides to change u
 Clone the repository and change into its directory.
 
 ```
-git clone https://codeberg.com/mtttech/openfight.git
-cd openfight
+git clone https://github.com/mtttech/openfight
+cd src
 ```
 
 The following is an example of a user looking up one fighter.
 
 ```
-$poetry run python openfight.py "Zhang Weili"
-Looking up (Zhang Weili @ https://www.ufc.com/athlete/zhang-weili)...
-Stats found for Zhang Weili.
-[{'athlete': 'Zhang Weili', 'wins': 24, 'losses': 3, 'draws': 0, 'total': 27, 'fight_win_streak': 0, 'first_round_finishes': 11, 'wins_by_knockout': 11, 'wins_by_submission': 8, 'title_defenses': 0}]
+$poetry run openfight "Zhang Weili"
+Looking up stats for 'Zhang Weili'...
++-------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
+|             | Wins | Losses | Draws | Total | Fight Win Streak | First Round Finishes | Wins by Knockout | Wins by Submission | Title Defenses |
++-------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
+| Zhang Weili |  25  |   3    |   0   |   28  |        0         |          11          |        11        |         8          |       0        |
++-------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 ```
 
 The following is an example of a user attempting to look up multiple fighters at once.
 
 ```
-$poetry run python openfight.py "Alistair Overeem" "Khabib Nurmagomedov" "Daniel Cormier" "Cung Le"
-Looking up (Alistair Overeem @ https://www.ufc.com/athlete/alistair-overeem)...
-Looking up (Khabib Nurmagomedov @ https://www.ufc.com/athlete/khabib-nurmagomedov)...
-Looking up (Daniel Cormier @ https://www.ufc.com/athlete/daniel-cormier)...
-Looking up (Cung Le @ https://www.ufc.com/athlete/cung-le)...
-Stats found for Alistair Overeem.
-Stats found for Khabib Nurmagomedov.
-Stats found for Daniel Cormier.
-Stats found for Cung Le.
-[{'athlete': 'Alistair Overeem', 'wins': 47, 'losses': 19, 'draws': 0, 'total': 66, 'fight_win_streak': 0, 'first_round_finishes': 0, 'wins_by_knockout': 25, 'wins_by_submission': 17, 'title_defenses': 0}, {'athlete': 'Khabib Nurmagomedov', 'wins': 29, 'losses': 0, 'draws': 0, 'total': 29, 'fight_win_streak': 30, 'first_round_finishes': 0, 'wins_by_knockout': 8, 'wins_by_submission': 11, 'title_defenses': 0}, {'athlete': 'Daniel Cormier', 'wins': 22, 'losses': 3, 'draws': 0, 'total': 25, 'fight_win_streak': 0, 'first_round_finishes': 0, 'wins_by_knockout': 10, 'wins_by_submission': 5, 'title_defenses': 4}, {'athlete': 'Cung Le', 'wins': 9, 'losses': 3, 'draws': 0, 'total': 12, 'fight_win_streak': 0, 'first_round_finishes': 0, 'wins_by_knockout': 0, 'wins_by_submission': 0, 'title_defenses': 0}]
+$poetry run openfight "Alistair Overeem" "Khabib Nurmagomedov" "Daniel Cormier" "Cung Le"
+Looking up stats for 'Alistair Overeem'...
+Looking up stats for 'Khabib Nurmagomedov'...
+Looking up stats for 'Daniel Cormier'...
+Looking up stats for 'Cung Le'...
++---------------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
+|                     | Wins | Losses | Draws | Total | Fight Win Streak | First Round Finishes | Wins by Knockout | Wins by Submission | Title Defenses |
++---------------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
+|   Alistair Overeem  |  47  |   19   |   0   |   66  |        0         |          0           |        25        |         17         |       0        |
+| Khabib Nurmagomedov |  29  |   0    |   0   |   29  |        30        |          0           |        8         |         11         |       0        |
+|    Daniel Cormier   |  22  |   3    |   0   |   25  |        0         |          0           |        10        |         5          |       4        |
+|       Cung Le       |  9   |   3    |   0   |   12  |        0         |          0           |        0         |         0          |       0        |
++---------------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 ```
