@@ -2,19 +2,21 @@
 openfight
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   17.11.24
+Modified:   21.11.24
 """
+
 import sys
 import time
-from typing import Dict, Union
+from typing import Any, List
 
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable # pyright: ignore
 import requests
 
 BASE_URL = "https://www.ufc.com/athlete/"
 
 
-def build_stat_block(athlete: str, content: bytes) -> Dict[str, Union[str, int]]:
+def build_stat_block(athlete: str, content: bytes) -> List[Any]:
     record = dict()
     record["athlete"] = athlete
 
@@ -22,10 +24,10 @@ def build_stat_block(athlete: str, content: bytes) -> Dict[str, Union[str, int]]
     soup = BeautifulSoup(content, "html.parser")
 
     fighter_record = soup.find("p", class_="hero-profile__division-body")
-    fighter_record = fighter_record.text.split(" ") # pyright: ignore [reportOptionalMemberAccess]
+    fighter_record = fighter_record.text.split( # pyright: ignore
+        " "
+    )
     fighter_record = fighter_record[0].split("-")
-
-    print(f"Stats found for {athlete}.")
 
     # Convert values in list to int.
     # Create entry with a total of the basic stats.
@@ -81,12 +83,15 @@ def build_stat_block(athlete: str, content: bytes) -> Dict[str, Union[str, int]]
         "title_defenses",
     ]
 
-    return {k: record[k] for k in order if k in record}
+    # sorts the fighter record in a specific order.
+    fighter_stats = {k: record[k] for k in order if k in record}
+
+    return list(fighter_stats.values())
 
 
-def request_fighter_stats(athlete: str) -> Union[Dict[str, Union[str, int]], None]:
+def request_fighter_stats(athlete: str) -> List[Any] | None:
     fighter_url = BASE_URL + athlete.strip().lower().replace(" ", "-")
-    print(f"Looking up '{athlete}'...")
+    print(f"Looking up stats for '{athlete}'...")
     try:
         result = requests.get(fighter_url)
         result.raise_for_status()
@@ -95,7 +100,7 @@ def request_fighter_stats(athlete: str) -> Union[Dict[str, Union[str, int]], Non
     except requests.exceptions.HTTPError as e:
         print(e.__str__())
     except AttributeError:
-        print("A query error has occured.")
+        print(f"A query error has occured locating '{athlete}'.")
 
 
 def openfight_main() -> None:
@@ -104,8 +109,27 @@ def openfight_main() -> None:
         print("error: not enough arguments specified.")
         exit(1)
 
+    table = PrettyTable()
+    table.field_names = [
+        "",
+        "Wins",
+        "Losses",
+        "Draws",
+        "Total",
+        "Fight Win Streak",
+        "First Round Finishes",
+        "Wins by Knockout",
+        "Wins by Submission",
+        "Title Defenses",
+    ]
     fighter_stats = [request_fighter_stats(a) for a in athlete[1:]]
-    print(*fighter_stats)
+    for stat in fighter_stats:
+        try:
+            table.add_row(stat)
+        except TypeError:
+            pass
+
+    print(table)
 
 
 if __name__ == "__main__":
