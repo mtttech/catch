@@ -1,8 +1,8 @@
 """
-openfight
+openFIGHT
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   21.11.24
+Modified:   22.11.24
 """
 
 import sys
@@ -10,10 +10,8 @@ import time
 from typing import Any, List
 
 from bs4 import BeautifulSoup
-from prettytable import PrettyTable # pyright: ignore
+from prettytable import PrettyTable  # pyright: ignore
 import requests
-
-BASE_URL = "https://www.ufc.com/athlete/"
 
 
 def build_stat_block(athlete: str, content: bytes) -> List[Any]:
@@ -22,11 +20,8 @@ def build_stat_block(athlete: str, content: bytes) -> List[Any]:
 
     # Gather the basic stats from the page.
     soup = BeautifulSoup(content, "html.parser")
-
     fighter_record = soup.find("p", class_="hero-profile__division-body")
-    fighter_record = fighter_record.text.split( # pyright: ignore
-        " "
-    )
+    fighter_record = fighter_record.text.split(" ")  # pyright: ignore
     fighter_record = fighter_record[0].split("-")
 
     # Convert values in list to int.
@@ -69,8 +64,8 @@ def build_stat_block(athlete: str, content: bytes) -> List[Any]:
         if special_category not in record:
             record[special_category] = 0
 
-    # Make the records consistent in order/return.
-    order = [
+    # Sort the fighter records consistently.
+    stat_order = [
         "athlete",
         "wins",
         "losses",
@@ -82,17 +77,17 @@ def build_stat_block(athlete: str, content: bytes) -> List[Any]:
         "wins_by_submission",
         "title_defenses",
     ]
-
-    # sorts the fighter record in a specific order.
-    fighter_stats = {k: record[k] for k in order if k in record}
+    fighter_stats = {k: record[k] for k in stat_order if k in record}
 
     return list(fighter_stats.values())
 
 
 def request_fighter_stats(athlete: str) -> List[Any] | None:
-    fighter_url = BASE_URL + athlete.strip().lower().replace(" ", "-")
-    print(f"Looking up stats for '{athlete}'...")
     try:
+        fighter_url = "https://www.ufc.com/athlete/" + athlete.strip().lower().replace(
+            " ", "-"
+        )
+        print(f"Looking up stats for '{athlete}'...")
         result = requests.get(fighter_url)
         result.raise_for_status()
         time.sleep(1)
