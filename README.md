@@ -1,4 +1,4 @@
-# OpenFIGHT
+# Catch
 
 This script scrapes fighter stats from the UFC website (use responsibly).
 
@@ -8,7 +8,7 @@ Note that the functionality of this script may change if UFC decides to change u
 
 ### Dependencies
 
-**OpenFIGHT** has the following dependencies.
+**Catch** has the following dependencies.
 
 * [beautifulsoup4](https://code.launchpad.net/beautifulsoup)
 * [prettytable](https://github.com/prettytable/prettytable)
@@ -21,7 +21,7 @@ Clone the repository, build a wheel and install with pipx.
 The following is an example of a user looking up one fighter.
 
 ```
-$openfight "Zhang Weili"
+$catch "Zhang Weili"
 Looking up stats for 'Zhang Weili'...
 +-------------+------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 |             | Wins | Losses | Draws | Total | Fight Win Streak | First Round Finishes | Wins by Knockout | Wins by Submission | Title Defenses |
@@ -33,7 +33,7 @@ Looking up stats for 'Zhang Weili'...
 The following is an example of a user attempting to look up multiple fighters at once.
 
 ```
-$openfight "Alistair Overeem" "Khabib Nurmagomedov" "Daniel Cormier" "Cung Le"
+$catch "Alistair Overeem" "Khabib Nurmagomedov" "Daniel Cormier" "Cung Le"
 Looking up stats for 'Alistair Overeem'...
 Looking up stats for 'Khabib Nurmagomedov'...
 Looking up stats for 'Daniel Cormier'...
