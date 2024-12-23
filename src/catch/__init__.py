@@ -1,8 +1,8 @@
 """
-openFIGHT
+Catch
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   22.11.24
+Modified:   23.12.24
 """
 
 import sys
@@ -98,7 +98,7 @@ def request_fighter_stats(athlete: str) -> List[Any] | None:
         print(f"A query error has occured locating '{athlete}'.")
 
 
-def openfight_main() -> None:
+def catch_main() -> None:
     athlete = sys.argv
     if len(athlete) < 2:
         print("error: not enough arguments specified.")
@@ -128,4 +128,4 @@ def openfight_main() -> None:
 
 
 if __name__ == "__main__":
-    openfight_main()
+    catch_main()
