@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "openfight"
+name = "Catch"
 version = "0.1.3"
 description = "A web scraping script for the UFC website."
 authors = ["mtttech <mtaylor9754@hotmail.com>"]
@@ -13,7 +13,7 @@ requests = "^2.32.3"
 prettytable = "^3.12.0"
 
 [tool.poetry.scripts]
-openfight='openfight:openfight_main'
+catch='catch:catch_main'
 
 [build-system]
 requires = ["poetry-core"]
