@@ -94,8 +94,10 @@ def request_fighter_stats(athlete: str) -> List[Any] | None:
         return build_stat_block(athlete, result.content)
     except requests.exceptions.HTTPError as e:
         print(e.__str__())
+        exit(2)
     except AttributeError:
         print(f"A query error has occured locating '{athlete}'.")
+        exit(3)
 
 
 def catch_main() -> None:
