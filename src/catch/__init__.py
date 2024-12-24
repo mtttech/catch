@@ -14,19 +14,36 @@ from prettytable import PrettyTable  # pyright: ignore
 import requests
 
 
-def build_stat_block(athlete: str, content: bytes) -> List[Any]:
+def request_url(athlete: str) -> List[Any] | None:
+    try:
+        fighter_url = "https://www.ufc.com/athlete/" + athlete.strip().lower().replace(
+            " ", "-"
+        )
+        print(f"Looking up stats for '{athlete}'...")
+        result = requests.get(fighter_url)
+        result.raise_for_status()
+        time.sleep(1)
+        return scrape_stats(athlete, result.content)
+    except requests.exceptions.HTTPError as e:
+        print(e.__str__())
+        exit(2)
+    except AttributeError:
+        print(f"A query error has occured locating '{athlete}'.")
+        exit(3)
+
+
+def scrape_stats(athlete: str, content: bytes) -> List[Any]:
     record = dict()
     record["athlete"] = athlete
 
     # Gather the basic stats from the page.
     soup = BeautifulSoup(content, "html.parser")
-    fighter_record = soup.find("p", class_="hero-profile__division-body")
-    fighter_record = fighter_record.text.split(" ")  # pyright: ignore
-    fighter_record = fighter_record[0].split("-")
+    page_elems = soup.find("p", class_="hero-profile__division-body")
+    record_string = page_elems.text.split(" ")  # pyright: ignore
 
     # Convert values in list to int.
     # Create entry with a total of the basic stats.
-    record_values = [int(n) for n in fighter_record]
+    record_values = [int(n) for n in record_string[0].split("-")]
     record["total"] = sum(record_values)
 
     # Fill in the basic category values.
@@ -41,16 +58,16 @@ def build_stat_block(athlete: str, content: bytes) -> List[Any]:
     # First Round Finishes
     # Fight Win Streak
     # Title Defenses
-    other_categories = soup.findAll("p", class_="hero-profile__stat-text")
-    other_categories = [x.text.lower().replace(" ", "_") for x in other_categories]
+    stat_headings = soup.findAll("p", class_="hero-profile__stat-text")
+    stat_headings = [x.text.lower().replace(" ", "_") for x in stat_headings]
 
     # Gather all the values for the above.
-    other_values = soup.findAll("p", class_="hero-profile__stat-numb")
-    other_values = [int(s.text) for s in other_values]
+    stat_values = soup.findAll("p", class_="hero-profile__stat-numb")
+    stat_values = [int(s.text) for s in stat_values]
 
     # Put it all together.
-    for index, _ in enumerate(other_categories):
-        record[other_categories[index]] = other_values[index]
+    for index, _ in enumerate(stat_headings):
+        record[stat_headings[index]] = stat_values[index]
 
     # Populate non-specified categories, if necessary.
     for special_category in (
@@ -82,24 +99,6 @@ def build_stat_block(athlete: str, content: bytes) -> List[Any]:
     return list(fighter_stats.values())
 
 
-def request_fighter_stats(athlete: str) -> List[Any] | None:
-    try:
-        fighter_url = "https://www.ufc.com/athlete/" + athlete.strip().lower().replace(
-            " ", "-"
-        )
-        print(f"Looking up stats for '{athlete}'...")
-        result = requests.get(fighter_url)
-        result.raise_for_status()
-        time.sleep(1)
-        return build_stat_block(athlete, result.content)
-    except requests.exceptions.HTTPError as e:
-        print(e.__str__())
-        exit(2)
-    except AttributeError:
-        print(f"A query error has occured locating '{athlete}'.")
-        exit(3)
-
-
 def catch_main() -> None:
     athlete = sys.argv
     if len(athlete) < 2:
@@ -119,7 +118,7 @@ def catch_main() -> None:
         "Wins by Submission",
         "Title Defenses",
     ]
-    fighter_stats = [request_fighter_stats(a) for a in athlete[1:]]
+    fighter_stats = [request_url(a) for a in athlete[1:]]
     for stat in fighter_stats:
         try:
             table.add_row(stat)
