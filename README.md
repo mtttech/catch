@@ -1,8 +1,8 @@
 # Catch
 
-This script scrapes fighter stats from the UFC website (use responsibly).
+**Catch** fighter is webscrapper that rips stats for athletes from the UFC (use responsibly).
 
-Note that the functionality of this script may change if UFC decides to change up their website. I had to rewrite the scraping code once. As of 12.24.24, the script still works.
+*NOTE:* The functionality of this script may change if UFC decides to change up the design of their website. I had to rewrite it once. As of 12.24.24, it still sworks.
 
 ## Quickstart
 
@@ -31,7 +31,7 @@ Stats found for 'Ailin Perez'.
 +------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 ```
 
-The following is an example of a user attempting to look up multiple fighters at once.
+The following is an example of a user looking up multiple fighters.
 
 ```
 $catch "Alistair Overeem" "Daniel Cormier"
@@ -43,7 +43,7 @@ Stats found for 'Alistair Overeem'.
 |  47  |   19   |   0   |   66  |        0         |          0           |        25        |         17         |       0        |
 +------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 Looking up stats for 'Daniel Cormier'...
-Stats found for 'Daniel Cormier'...
+Stats found for 'Daniel Cormier'.
 +------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
 | Wins | Losses | Draws | Total | Fight Win Streak | First Round Finishes | Wins by Knockout | Wins by Submission | Title Defenses |
 +------+--------+-------+-------+------------------+----------------------+------------------+--------------------+----------------+
