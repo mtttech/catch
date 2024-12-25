@@ -14,7 +14,7 @@ from prettytable import PrettyTable  # pyright: ignore
 import requests
 
 
-def print_table(fighter_stats: List[Any]) -> PrettyTable:
+def construct_table(stats: List[Any]) -> PrettyTable:
     table = PrettyTable()
     table.field_names = [
         "Wins",
@@ -27,12 +27,7 @@ def print_table(fighter_stats: List[Any]) -> PrettyTable:
         "Wins by Submission",
         "Title Defenses",
     ]
-    for stat in fighter_stats:
-        try:
-            table.add_row(stat)
-        except TypeError:
-            pass
-
+    table.add_row(stats)
     return table
 
 
@@ -118,7 +113,7 @@ def catch_main() -> None:
         resp = request_url(query)
         try:
             print(f"Stats found for '{query}'.")
-            print(print_table(scrape_stats(resp)))
+            print(construct_table(scrape_stats(resp)))
         except AttributeError:
             print(f"Nothing found for '{query}'.")
 
