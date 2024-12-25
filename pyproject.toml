@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Catch"
-version = "0.1.4"
+version = "0.1.5"
 description = "A web scraper for the UFC website."
 authors = ["mtttech <mtaylor9754@hotmail.com>"]
 license = "MIT"
