@@ -2,7 +2,7 @@
 Catch
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   23.12.24
+Modified:   24.12.24
 """
 
 import sys
@@ -14,27 +14,36 @@ from prettytable import PrettyTable  # pyright: ignore
 import requests
 
 
-def request_url(athlete: str) -> List[Any] | None:
-    try:
-        fighter_url = "https://www.ufc.com/athlete/" + athlete.strip().lower().replace(
-            " ", "-"
-        )
-        print(f"Looking up stats for '{athlete}'...")
-        result = requests.get(fighter_url)
-        result.raise_for_status()
-        time.sleep(1)
-        return scrape_stats(athlete, result.content)
-    except requests.exceptions.HTTPError as e:
-        print(e.__str__())
-        exit(2)
-    except AttributeError:
-        print(f"A query error has occured locating '{athlete}'.")
-        exit(3)
+def print_table(fighter_stats: List[Any]) -> PrettyTable:
+    table = PrettyTable()
+    table.field_names = [
+        "Wins",
+        "Losses",
+        "Draws",
+        "Total",
+        "Fight Win Streak",
+        "First Round Finishes",
+        "Wins by Knockout",
+        "Wins by Submission",
+        "Title Defenses",
+    ]
+    for stat in fighter_stats:
+        try:
+            table.add_row(stat)
+        except TypeError:
+            pass
+
+    return table
 
 
-def scrape_stats(athlete: str, content: bytes) -> List[Any]:
+def request_url(athlete: str) -> bytes:
+    athlete_tag = athlete.strip().lower().replace(" ", "-")
+    resp = requests.get("https://www.ufc.com/athlete/" + athlete_tag)
+    return resp.content
+
+
+def scrape_stats(content: bytes) -> List[Any]:
     record = dict()
-    record["athlete"] = athlete
 
     # Gather the basic stats from the page.
     soup = BeautifulSoup(content, "html.parser")
@@ -83,7 +92,6 @@ def scrape_stats(athlete: str, content: bytes) -> List[Any]:
 
     # Sort the fighter records consistently.
     stat_order = [
-        "athlete",
         "wins",
         "losses",
         "draws",
@@ -100,32 +108,21 @@ def scrape_stats(athlete: str, content: bytes) -> List[Any]:
 
 
 def catch_main() -> None:
-    athlete = sys.argv
-    if len(athlete) < 2:
+    queries = sys.argv
+    if len(queries) < 2:
         print("error: not enough arguments specified.")
         exit(1)
 
-    table = PrettyTable()
-    table.field_names = [
-        "",
-        "Wins",
-        "Losses",
-        "Draws",
-        "Total",
-        "Fight Win Streak",
-        "First Round Finishes",
-        "Wins by Knockout",
-        "Wins by Submission",
-        "Title Defenses",
-    ]
-    fighter_stats = [request_url(a) for a in athlete[1:]]
-    for stat in fighter_stats:
+    for query in queries[1:]:
+        print(f"Looking up {query}...")
+        resp = request_url(query)
         try:
-            table.add_row(stat)
-        except TypeError:
-            pass
+            print(f"Stats found for '{query}'.")
+            print(print_table(scrape_stats(resp)))
+        except AttributeError:
+            print(f"Nothing found for '{query}'.")
 
-    print(table)
+        time.sleep(1)
 
 
 if __name__ == "__main__":
