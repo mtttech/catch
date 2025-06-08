@@ -1,19 +1,24 @@
 [tool.poetry]
 name = "Catch"
 version = "0.1.5"
-description = "A web scraper for the UFC website."
-authors = ["mtttech <mtaylor9754@hotmail.com>"]
+description = "Scrapes fighter stats from the official UFC website."
+authors = ["Marcus T Taylor <mtaylor9754@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 bs4 = "^0.0.2"
 requests = "^2.32.3"
 prettytable = "^3.12.0"
 
 [tool.poetry.scripts]
-catch='catch:catch_main'
+catch='catch.catch:catch_main'
 
 [build-system]
 requires = ["poetry-core"]
