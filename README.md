@@ -1,8 +1,8 @@
 # Catch
 
-**Catch** fighter is webscrapper that rips stats for athletes from the UFC (use responsibly).
+**Catch** is a script that scrapes fighter stats from the UFC website (use responsibly).
 
-*NOTE:* The functionality of this script may change if UFC decides to change up the design of their website. I had to rewrite it once. As of 12.24.24, it still works.
+*NOTE:* The functionality of this script may change if UFC decides to change up the design of their website. I had to rewrite it once. As of 06.07.25, it still works.
 
 ## Quickstart
 
