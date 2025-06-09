@@ -11,6 +11,7 @@
 **Catch** has the following dependencies.
 
 * [beautifulsoup4](https://code.launchpad.net/beautifulsoup)
+* [mysql-connector](https://github.com/mysql/mysql-connector-python)
 * [prettytable](https://github.com/prettytable/prettytable)
 * [requests](https://github.com/psf/requests)
 
