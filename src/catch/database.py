@@ -1,10 +1,12 @@
-import sqlite3
+import mysql.connector
 from typing import Any, Dict
 
 
 class Database:
     def __enter__(self):
-        self.db = sqlite3.connect("catch.db")
+        self.db = mysql.connector.connect(
+            host="localhost", user="catch", passwd="#Elegrim9162", database="catch"
+        )
         self.cursor = self.db.cursor()
         return self
 
@@ -23,15 +25,16 @@ class InitDB(Database):
     def create_table(self):
         table = """ CREATE TABLE IF NOT EXISTS ufcstats (
             Athlete VARCHAR(255) NOT NULL,
-            Wins INT,
-            Losses INT,
-            Draws INT,
-            Total INT,
-            Fight_Win_Streak INT,
-            Fight_Round_Finishes INT,
-            Wins_by_Knockout INT,
-            Wins_by_Submission INT,
-            Title_Defenses INT
+            Wins INT(11),
+            Losses INT(11),
+            Draws INT(11),
+            Total INT(11),
+            Fight_Win_Streak INT(11),
+            Fight_Round_Finishes INT(11),
+            Wins_by_Knockout INT(11),
+            Wins_by_Submission INT(11),
+            Title_Defenses INT(11),
+            UNIQUE (Athlete)
         ); """
         self.cursor.execute(table)
         self.db.commit()
@@ -54,7 +57,7 @@ class _Record(Database):
             Wins_by_Knockout,
             Wins_by_Submission,
             Title_Defenses
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
         self.cursor.execute(sql, tuple(self.data.values()))
         self.db.commit()
 
