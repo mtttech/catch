@@ -168,6 +168,17 @@ files = [
 all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
 
 [[package]]
+name = "mysql-connector"
+version = "2.2.9"
+description = "MySQL driver written in Python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "mysql-connector-2.2.9.tar.gz", hash = "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32"},
+]
+
+[[package]]
 name = "prettytable"
 version = "3.16.0"
 description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
@@ -264,4 +275,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "254939e09cea2a631db0b432c8e450e9febf66a49a426379d41ded8001de8e0a"
+content-hash = "950feed359f61fa8a154dffdd3ffb3f48e27d394e5f11f1faf282579104f42cd"
