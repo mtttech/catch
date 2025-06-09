@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Any, Dict
 
 
 class Database:
@@ -10,8 +11,8 @@ class Database:
     def __exit__(self, exc_type, exc_value, exc_tb):
         if exc_type:
             print(f"{exc_type} {exc_value}")
+            print(exc_tb)
         if self.db is not None:
-            self.db.commit()
             self.db.close()
 
 
@@ -19,7 +20,7 @@ class InitDB(Database):
     def __init__(self):
         super().__init__()
 
-    def create(self):
+    def create_table(self):
         table = """ CREATE TABLE IF NOT EXISTS ufcstats (
             Athlete VARCHAR(255) NOT NULL,
             Wins INT,
@@ -33,15 +34,16 @@ class InitDB(Database):
             Title_Defenses INT
         ); """
         self.cursor.execute(table)
+        self.db.commit()
 
 
-class Base(Database):
-    def __init__(self, d):
+class _Record(Database):
+    def __init__(self, data: Dict[str, Any]):
         super().__init__()
-        self.d = d
+        self.data = data
 
-    def create(self):
-        table = """ INSERT INTO ufcstats (
+    def insert(self):
+        sql = """ INSERT INTO ufcstats (
             Athlete,
             Wins,
             Losses,
@@ -53,15 +55,15 @@ class Base(Database):
             Wins_by_Submission,
             Title_Defenses
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
-        self.cursor.execute(table, tuple(self.d.values()))
-        #print(tuple(self.d.values()))
+        self.cursor.execute(sql, tuple(self.data.values()))
+        self.db.commit()
 
 
 class Fighter:
-    def __init__(self, d):
-        with Base(d) as db:
-            db.create()
+    def __init__(self, data: Dict[str, Any]):
+        with _Record(data) as record:
+            record.insert()
 
 
 with InitDB() as db:
-    db.create()
+    db.create_table()
