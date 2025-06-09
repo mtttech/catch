@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Catch"
-version = "0.2.0"
+version = "0.2.1"
 description = "Scrapes fighter stats from the official UFC website."
 authors = ["Marcus T Taylor <mtaylor9754@hotmail.com>"]
 license = "MIT"
@@ -16,6 +16,7 @@ python = "^3.12"
 bs4 = "^0.0.2"
 requests = "^2.32.3"
 prettytable = "^3.12.0"
+mysql-connector = "^2.2.9"
 
 [tool.poetry.scripts]
 catch='catch.catch:catch_main'
