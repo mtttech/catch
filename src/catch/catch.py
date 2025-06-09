@@ -2,21 +2,24 @@
 Catch
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   24.12.24
+Modified:   25.06.09
 """
 
 import sys
 import time
-from typing import Any, List
+from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable  # pyright: ignore
 import requests
 
+from catch.database import Fighter
+
 
 def construct_table(stats: List[Any]) -> PrettyTable:
     table = PrettyTable()
     table.field_names = [
+        "Athete",
         "Wins",
         "Losses",
         "Draws",
@@ -37,8 +40,9 @@ def request_url(athlete: str) -> bytes:
     return resp.content
 
 
-def scrape_stats(content: bytes) -> List[Any]:
-    record = dict()
+def scrape_stats(athlete: str, content: bytes) -> Dict[str, Any]:
+    record = {}
+    record["athlete"] = athlete
 
     # Gather the basic stats from the page.
     soup = BeautifulSoup(content, "html.parser")
@@ -87,6 +91,7 @@ def scrape_stats(content: bytes) -> List[Any]:
 
     # Sort the fighter records consistently.
     stat_order = [
+        "athlete",
         "wins",
         "losses",
         "draws",
@@ -99,22 +104,24 @@ def scrape_stats(content: bytes) -> List[Any]:
     ]
     fighter_stats = {k: record[k] for k in stat_order if k in record}
 
-    return list(fighter_stats.values())
+    return fighter_stats
 
 
 def catch_main() -> None:
-    queries = sys.argv
-    if len(queries) < 2:
+    fighters = sys.argv
+    if len(fighters) < 2:
         print("error: not enough arguments specified.")
         exit(1)
 
-    for query in queries[1:]:
-        print(f"Looking up {query}...")
-        resp = request_url(query)
+    for athlete in fighters[1:]:
+        print(f"Looking up {athlete}...")
+        resp = request_url(athlete)
         try:
-            print(f"Stats found for '{query}'.")
-            print(construct_table(scrape_stats(resp)))
+            result = scrape_stats(athlete, resp)
+            print(f"Stats found.")
+            print(construct_table(list(result.values())))
+            Fighter(result)
         except AttributeError:
-            print(f"Nothing found for '{query}'.")
+            print(f"Nothing found for '{athlete}'.")
 
         time.sleep(1)
