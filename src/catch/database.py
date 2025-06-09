@@ -25,15 +25,15 @@ class InitDB(Database):
     def create_table(self):
         table = """ CREATE TABLE IF NOT EXISTS ufcstats (
             Athlete VARCHAR(255) NOT NULL,
-            Wins INT(11),
-            Losses INT(11),
-            Draws INT(11),
-            Total INT(11),
-            Fight_Win_Streak INT(11),
-            Fight_Round_Finishes INT(11),
-            Wins_by_Knockout INT(11),
-            Wins_by_Submission INT(11),
-            Title_Defenses INT(11),
+            Wins INT(4),
+            Losses INT(4),
+            Draws INT(4),
+            Total INT(4),
+            Fight_Win_Streak INT(4),
+            Fight_Round_Finishes INT(4),
+            Wins_by_Knockout INT(4),
+            Wins_by_Submission INT(4),
+            Title_Defenses INT(4),
             UNIQUE (Athlete)
         ); """
         self.cursor.execute(table)
