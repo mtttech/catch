@@ -1,5 +1,6 @@
-import mysql.connector
 from typing import Any, Dict
+
+import mysql.connector
 
 
 class Database:
@@ -43,7 +44,7 @@ class InitDB(Database):
 class _Record(Database):
     def __init__(self, data: Dict[str, Any]):
         super().__init__()
-        self.data = data
+        self.data = tuple(data.values())
 
     def insert(self):
         sql = """ INSERT INTO ufcstats (
@@ -57,15 +58,57 @@ class _Record(Database):
             Wins_by_Knockout,
             Wins_by_Submission,
             Title_Defenses
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
-        self.cursor.execute(sql, tuple(self.data.values()))
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s); """
+        self.cursor.execute(sql, self.data)
+        self.db.commit()
+
+    def is_match(self) -> int:
+        sql = """ SELECT COUNT(*) FROM ufcstats
+            WHERE Athlete = %s
+            AND Wins = %s
+            AND Losses = %s
+            AND Draws = %s
+            AND Total = %s
+            AND Fight_Win_Streak = %s
+            AND Fight_Round_Finishes = %s
+            AND Wins_by_Knockout = %s
+            AND Wins_by_Submission = %s
+            AND Title_Defenses = %s; """
+        self.cursor.execute(sql, self.data)
+        return self.cursor.fetchone()[0]
+
+    def num_of_rows(self) -> int:
+        sql = "SELECT COUNT(*) FROM ufcstats WHERE Athlete = %s;"
+        self.cursor.execute(sql, (self.data[0],))
+        return self.cursor.fetchone()[0]
+
+    def update(self):
+        athlete = self.data[0]
+        data = list(self.data[1:])
+        data.append(athlete)
+        sql = """ UPDATE ufcstats SET 
+                Wins = %s,
+                Losses = %s,
+                Draws = %s,
+                Total = %s,
+                Fight_Win_Streak = %s,
+                Fight_Round_Finishes = %s,
+                Wins_by_Knockout = %s,
+                Wins_by_Submission = %s,
+                Title_Defenses = %s
+            WHERE Athlete = %s; """
+        self.cursor.execute(sql, data)
         self.db.commit()
 
 
 class Fighter:
     def __init__(self, data: Dict[str, Any]):
         with _Record(data) as record:
-            record.insert()
+            if record.num_of_rows() == 0:
+                record.insert()
+            else:
+                if not record.is_match():
+                    record.update()
 
 
 with InitDB() as db:
