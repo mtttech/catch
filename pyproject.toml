@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Catch"
-version = "0.2.1"
+version = "0.2.2"
 description = "Scrapes fighter stats from the official UFC website."
 authors = ["Marcus T Taylor <mtaylor9754@hotmail.com>"]
 license = "MIT"
