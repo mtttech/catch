@@ -1,9 +1,9 @@
 from typing import Any, Dict
 
-import mysql.connector
+import mysql.connector  # pyright: ignore
 
 
-class Database:
+class _Database:
     def __enter__(self):
         self.db = mysql.connector.connect(
             host="localhost", user="catch", passwd="#Elegrim9162", database="catch"
@@ -19,7 +19,7 @@ class Database:
             self.db.close()
 
 
-class InitDB(Database):
+class InitDB(_Database):
     def __init__(self):
         super().__init__()
 
@@ -36,17 +36,17 @@ class InitDB(Database):
             Wins_by_Submission INT(4),
             Title_Defenses INT(4),
             UNIQUE (Athlete)
-        ); """
+        ) ENGINE=InnoDB DEFAULT CHARSET=latin1; """
         self.cursor.execute(table)
         self.db.commit()
 
 
-class _Record(Database):
+class _Record(_Database):
     def __init__(self, data: Dict[str, Any]):
         super().__init__()
         self.data = tuple(data.values())
 
-    def insert(self):
+    def insert(self) -> int:
         sql = """ INSERT INTO ufcstats (
             Athlete,
             Wins,
@@ -61,6 +61,7 @@ class _Record(Database):
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s); """
         self.cursor.execute(sql, self.data)
         self.db.commit()
+        return self.cursor.rowcount
 
     def is_match(self) -> int:
         sql = """ SELECT COUNT(*) FROM ufcstats
@@ -82,7 +83,7 @@ class _Record(Database):
         self.cursor.execute(sql, (self.data[0],))
         return self.cursor.fetchone()[0]
 
-    def update(self):
+    def update(self) -> int:
         athlete = self.data[0]
         data = list(self.data[1:])
         data.append(athlete)
@@ -99,6 +100,7 @@ class _Record(Database):
             WHERE Athlete = %s; """
         self.cursor.execute(sql, data)
         self.db.commit()
+        return self.cursor.rowcount
 
 
 class Fighter:
