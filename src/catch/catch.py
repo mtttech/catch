@@ -1,8 +1,9 @@
 """
 Catch
+
 Author:     Marcus T Taylor <mtaylor9754@hotmail.com>
 Created:    16.11.23
-Modified:   25.06.09
+Modified:   25.06.12
 """
 
 import sys
@@ -66,11 +67,11 @@ def scrape_stats(athlete: str, content: bytes) -> Dict[str, Any]:
     # First Round Finishes
     # Fight Win Streak
     # Title Defenses
-    stat_headings = soup.findAll("p", class_="hero-profile__stat-text")
+    stat_headings = soup.find_all("p", class_="hero-profile__stat-text")
     stat_headings = [x.text.lower().replace(" ", "_") for x in stat_headings]
 
     # Gather all the values for the above.
-    stat_values = soup.findAll("p", class_="hero-profile__stat-numb")
+    stat_values = soup.find_all("p", class_="hero-profile__stat-numb")
     stat_values = [int(s.text) for s in stat_values]
 
     # Put it all together.
