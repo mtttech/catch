@@ -1,12 +1,18 @@
+import os
 from typing import Any, Dict
 
+from dotenv import load_dotenv
 import mysql.connector  # pyright: ignore
 
 
 class _Database:
     def __enter__(self):
+        load_dotenv()
         self.db = mysql.connector.connect(
-            host="localhost", user="catch", passwd="#Elegrim9162", database="catch"
+            host=os.getenv("HOST"),
+            user=os.getenv("USER"),
+            passwd=os.getenv("PASSWD"),
+            database=os.getenv("DATABASE"),
         )
         self.cursor = self.db.cursor()
         return self
