@@ -2,7 +2,7 @@ import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-import mysql.connector  # pyright: ignore
+import mysql.connector
 
 
 class _Database:
@@ -10,7 +10,7 @@ class _Database:
         load_dotenv()
         self.db = mysql.connector.connect(
             host=os.getenv("HOST"),
-            user=os.getenv("USER"),
+            user=os.getenv("USERNAME"),
             passwd=os.getenv("PASSWD"),
             database=os.getenv("DATABASE"),
         )
