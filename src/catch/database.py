@@ -11,7 +11,7 @@ class _Database:
         self.cursor = self.db.cursor()
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_tb):
+    def __exit__(self, exc_type, exc_value, exc_tb) -> None:
         if exc_type:
             print(f"{exc_type} {exc_value}")
             print(exc_tb)
@@ -20,10 +20,10 @@ class _Database:
 
 
 class InitDB(_Database):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def create_table(self):
+    def create_table(self) -> None:
         table = """ CREATE TABLE IF NOT EXISTS ufcstats (
             Athlete VARCHAR(255) NOT NULL,
             Wins INT(4),
@@ -42,7 +42,7 @@ class InitDB(_Database):
 
 
 class _Record(_Database):
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__()
         self.data = tuple(data.values())
 
