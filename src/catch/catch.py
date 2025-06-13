@@ -20,7 +20,7 @@ from catch.database import Fighter
 def construct_table(stats: List[Any]) -> PrettyTable:
     table = PrettyTable()
     table.field_names = [
-        "Athete",
+        "Athlete",
         "Wins",
         "Losses",
         "Draws",
