@@ -69,7 +69,7 @@ class _Record(_Database):
         self.db.commit()
         return self.cursor.rowcount
 
-    def is_match(self) -> int:
+    def is_match(self):
         sql = """ SELECT COUNT(*) FROM ufcstats
             WHERE Athlete = %s
             AND Wins = %s
@@ -84,7 +84,7 @@ class _Record(_Database):
         self.cursor.execute(sql, self.data)
         return self.cursor.fetchone()[0]
 
-    def num_of_rows(self) -> int:
+    def num_of_rows(self):
         sql = "SELECT COUNT(*) FROM ufcstats WHERE Athlete = %s;"
         self.cursor.execute(sql, (self.data[0],))
         return self.cursor.fetchone()[0]
