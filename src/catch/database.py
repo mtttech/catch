@@ -37,7 +37,7 @@ class InitDB(_Database):
             Draws INT(4),
             Total INT(4),
             Fight_Win_Streak INT(4),
-            Fight_Round_Finishes INT(4),
+            First_Round_Finishes INT(4),
             Wins_by_Knockout INT(4),
             Wins_by_Submission INT(4),
             Title_Defenses INT(4),
@@ -60,7 +60,7 @@ class _Record(_Database):
             Draws,
             Total,
             Fight_Win_Streak,
-            Fight_Round_Finishes,
+            First_Round_Finishes,
             Wins_by_Knockout,
             Wins_by_Submission,
             Title_Defenses
@@ -77,7 +77,7 @@ class _Record(_Database):
             AND Draws = %s
             AND Total = %s
             AND Fight_Win_Streak = %s
-            AND Fight_Round_Finishes = %s
+            AND First_Round_Finishes = %s
             AND Wins_by_Knockout = %s
             AND Wins_by_Submission = %s
             AND Title_Defenses = %s; """
@@ -99,7 +99,7 @@ class _Record(_Database):
                 Draws = %s,
                 Total = %s,
                 Fight_Win_Streak = %s,
-                Fight_Round_Finishes = %s,
+                First_Round_Finishes = %s,
                 Wins_by_Knockout = %s,
                 Wins_by_Submission = %s,
                 Title_Defenses = %s
